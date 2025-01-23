@@ -2,6 +2,7 @@ package org.example.square;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -85,6 +86,7 @@ public class HelloApplication extends Application {
         VBox root = new VBox();
         root.getChildren().addAll(instructions, colorOptionsSquare, warning);
         root.setSpacing(50);
+        root.setPadding(new Insets(50, 0, 0, 0));
 
         // Staging
         Scene scene = new Scene(root, 800, 600, Color.web(FLORAL_WHITE));
