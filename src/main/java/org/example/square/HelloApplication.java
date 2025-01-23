@@ -1,12 +1,14 @@
 package org.example.square;
 
 import javafx.application.Application;
+import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -24,6 +26,7 @@ public class HelloApplication extends Application {
     private final double MAX_SIZE = 180;
     private RadioButton redRadio, greenRadio, orangeRadio;
     private Rectangle square = new Rectangle();
+    private Slider slider;
 
     @Override
     public void start(Stage primaryStage) {
@@ -32,29 +35,23 @@ public class HelloApplication extends Application {
         String FLORAL_WHITE = "#FAF8EF";
         String ONYX = "#3E3E3E";
 
-        // Text Groups
+        // Text blocks
         StackPane instructions = new StackPane();
         StackPane warning = new StackPane();
 
         // Instructions
-        Text instructionText = new Text("Change the square color using the radio buttons.\nChange" +
-                " the scale of the square from 0-100% with the slider.");
+        String instructionString = "Change the square color using the radio buttons.\nChange the " +
+                "scale of the square from 0-100% with the slider.";
 
-        instructionText.setFont(Font.font("Roboto", FontWeight.MEDIUM, FontPosture.REGULAR, 18));
-        instructionText.setFill(Color.web(ONYX));
-        instructionText.setTextAlignment(TextAlignment.CENTER);
-
+        Text instructionText = createText(instructionString, ONYX);
         instructions.getChildren().add(instructionText);
         instructions.setAlignment(Pos.CENTER);
 
         // Warning
-        Text warningText = new Text("Select the radio buttons or the slider only.\nA warning " +
-                "sound will play if the mouse is clicked elsewhere.");
+        String warningString = "Select the radio buttons or the slider only.\nA warning sound " +
+                "will play if the mouse is clicked elsewhere.";
 
-        warningText.setFont(Font.font("Roboto", FontWeight.MEDIUM, FontPosture.REGULAR, 18));
-        warningText.setFill(Color.web(RED));
-        warningText.setTextAlignment(TextAlignment.CENTER);
-
+        Text warningText = createText(warningString, RED);
         warning.getChildren().add(warningText);
         warning.setAlignment(Pos.CENTER);
 
@@ -82,17 +79,47 @@ public class HelloApplication extends Application {
         colorOptionsSquare.setAlignment(Pos.CENTER);
         colorOptionsSquare.setSpacing(100);
 
+        // Slider
+        slider = new Slider(0, 100, 75);
+        slider.setOrientation(Orientation.HORIZONTAL);
+        slider.setShowTickMarks(true);
+        slider.setMajorTickUnit(25);
+        slider.setShowTickLabels(true);
+        slider.setPrefSize(500, 40);
+        HBox sliderContainer = new HBox(slider);
+        sliderContainer.setAlignment(Pos.CENTER);
+
+        // Bind slider value to square scale
+        DoubleProperty sliderValue = slider.valueProperty();
+        square.scaleXProperty().bind(sliderValue.divide(100));
+        square.scaleYProperty().bind(sliderValue.divide(100));
+
+//        // TEST
+//        slider.setOnMouseDragged(event -> {
+//            System.out.println(slider.valueProperty());
+//        });
+
         // Vertical root
         VBox root = new VBox();
-        root.getChildren().addAll(instructions, colorOptionsSquare, warning);
+        root.getChildren().addAll(instructions, colorOptionsSquare, sliderContainer, warning);
         root.setSpacing(50);
-        root.setPadding(new Insets(50, 0, 0, 0));
+        root.setPadding(new Insets(50));
 
         // Staging
-        Scene scene = new Scene(root, 800, 600, Color.web(FLORAL_WHITE));
+        Scene scene = new Scene(root, Color.web(FLORAL_WHITE));
         primaryStage.setTitle("Changing Square");
         primaryStage.setScene(scene);
+        primaryStage.setMinWidth(600);
+        primaryStage.setMinHeight(600);
         primaryStage.show();
+    }
+
+    private Text createText (String string, String color) {
+        Text text = new Text(string);
+        text.setFill(Color.web(color));
+        text.setFont(Font.font("Roboto", FontWeight.MEDIUM, FontPosture.REGULAR, 18));
+        text.setTextAlignment(TextAlignment.CENTER);
+        return text;
     }
 
     private RadioButton createStyledRadioButton(String text, ToggleGroup group, boolean selected) {
