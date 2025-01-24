@@ -13,10 +13,13 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
+import java.net.URL;
+import javafx.scene.input.MouseEvent;
 
 public class HelloApplication extends Application {
 
@@ -27,9 +30,21 @@ public class HelloApplication extends Application {
     private RadioButton redRadio, greenRadio, orangeRadio;
     private Rectangle square = new Rectangle();
     private Slider slider;
+    private AudioClip bloopSound;
 
     @Override
     public void start(Stage primaryStage) {
+
+        // Testing Sound File
+        // Resource: https://openjfx.io/javadoc/23/javafx.media/javafx/scene/media/AudioClip.html
+        try {
+            String soundUrl = HelloApplication.class.getResource("/bloop.mp3").toExternalForm();
+            bloopSound = new AudioClip(soundUrl);
+        } catch (NullPointerException e) {
+            // TODO show warning dialog that the sound file was not found and the program will
+            //  continue without that feature
+            System.out.println(e.getMessage());
+        }
 
         // Color palette
         String BACKGROUND = "#FFFCEF";
@@ -94,8 +109,6 @@ public class HelloApplication extends Application {
         square.scaleXProperty().bind(sliderValue.divide(100));
         square.scaleYProperty().bind(sliderValue.divide(100));
 
-        // TODO: Sound
-
         // Vertical root
         VBox root = new VBox();
         root.getChildren().addAll(instructions, colorOptionsSquare, sliderContainer, warning);
@@ -105,11 +118,23 @@ public class HelloApplication extends Application {
 
         // Staging
         Scene scene = new Scene(root);
+        scene.setOnMouseClicked(this::handleMouseClick);
+
         primaryStage.setTitle("Changing Square");
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(600);
         primaryStage.setMinHeight(600);
         primaryStage.show();
+    }
+
+    // Handles mouse click events on the scene (clicks on radio buttons and the slider are
+    // consumed by their own handlers and will not bubble up to scene; thus, we do not have
+    // to do any event delegation/filtering to play the sound when anything besides the
+    // radio buttons or slider are clicked)
+    private void handleMouseClick(MouseEvent event) {
+        if (bloopSound != null) {
+            bloopSound.play();
+        }
     }
 
     private Text createText (String string, String color) {
