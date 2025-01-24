@@ -67,12 +67,13 @@ public class SquareFX extends Application {
     // without the bloop sound effect.
     // Resource: https://openjfx.io/javadoc/23/javafx.media/javafx/scene/media/AudioClip.html
     private void setupSound() {
+            String soundFile = "/bloop.mp3";
         try {
-            String soundUrl = SquareFX.class.getResource("/bloop.mp3").toExternalForm();
+            String soundUrl = SquareFX.class.getResource(soundFile).toExternalForm();
             bloopSound = new AudioClip(soundUrl);
         }  catch (NullPointerException e) {
-            String errorMsg = "Sound file \"bloop.mp3\" was not found in resources. \nThe app " +
-                    "will run without sound effects.";
+            String errorMsg = "Sound file \"" + soundFile + "\" was not found in resources. \nThe" +
+                    "app will run without sound effects.";
             showErrorDialog("Audio Error", errorMsg);
         } catch (Exception e) {
             String errorMsg = "Error: " + e.getMessage() + "\nThe app will run without sound effects.";
