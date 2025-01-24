@@ -32,7 +32,7 @@ public class HelloApplication extends Application {
     public void start(Stage primaryStage) {
 
         // Color palette
-        String FLORAL_WHITE = "#FAF8EF";
+        String BACKGROUND = "#FFFCEF";
         String ONYX = "#3E3E3E";
 
         // Text blocks
@@ -94,19 +94,17 @@ public class HelloApplication extends Application {
         square.scaleXProperty().bind(sliderValue.divide(100));
         square.scaleYProperty().bind(sliderValue.divide(100));
 
-//        // TEST
-//        slider.setOnMouseDragged(event -> {
-//            System.out.println(slider.valueProperty());
-//        });
+        // TODO: Sound
 
         // Vertical root
         VBox root = new VBox();
         root.getChildren().addAll(instructions, colorOptionsSquare, sliderContainer, warning);
+        root.setStyle("-fx-background-color: " + BACKGROUND + ";");
         root.setSpacing(50);
         root.setPadding(new Insets(50));
 
         // Staging
-        Scene scene = new Scene(root, Color.web(FLORAL_WHITE));
+        Scene scene = new Scene(root);
         primaryStage.setTitle("Changing Square");
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(600);
@@ -131,7 +129,7 @@ public class HelloApplication extends Application {
         return radio;
     }
 
-    public void handleColorRadioButtonAction(ActionEvent event) {
+    private void handleColorRadioButtonAction(ActionEvent event) {
         if (redRadio.isSelected()) {
             square.setFill(Color.web(RED));
         } else if (greenRadio.isSelected()) {
